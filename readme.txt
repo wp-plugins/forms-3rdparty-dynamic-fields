@@ -1,7 +1,7 @@
 === Forms: 3rd-Party Dynamic Fields ===
 Contributors: zaus, skane
 Donate link: http://drzaus.com/donate
-Tags: contact form, form, contact form 7, CF7, gravity forms, GF, CRM, mapping, 3rd-party service, services, remote request, dynamic fields, get params
+Tags: contact form, form, contact form 7, CF7, gravity forms, GF, CRM, mapping, 3rd-party service, services, remote request, dynamic fields, get params, referer
 Requires at least: 3.0
 Tested up to: 3.3.1
 Stable tag: trunk
@@ -11,7 +11,7 @@ Provides some dynamic field values via placeholder to plugin "Forms: 3rdparty In
 
 == Description ==
 
-Using pre-configured placeholders like `##UID##` or `##SITEURL##`, add dynamic fields to the normally map-only or static-only [Forms: 3rdparty Integration](http://wordpress.org/plugins/forms-3rdparty-integration/) plugin.
+Using pre-configured placeholders like `##UID##`, `##REFERER##`, or `##SITEURL##`, add dynamic fields to the normally map-only or static-only [Forms: 3rdparty Integration](http://wordpress.org/plugins/forms-3rdparty-integration/) plugin.
 
 == Installation ==
 
@@ -38,7 +38,7 @@ Submit an issue to the [GitHub issue tracker][] in addition to / instead of the 
 
 See "base plugin" [Forms: 3rdparty Integration](http://wordpress.org/plugins/forms-3rdparty-integration/).
 
-Expand the box "Dynamic Placeholder Examples" for allowed dynamic fields.
+Expand the box "Dynamic Placeholder Examples" below the 'save' button for allowed dynamic fields.
 
 = How do I add GET parameters to my service post? =
 
@@ -49,6 +49,11 @@ Use the placeholder `##GET:{urlparam}##` as the static value, which will attach 
 __None available.__
 
 == Changelog ==
+
+= 0.3.2 =
+* added REFERER
+* more translated text
+* handles nested values
 
 = 0.3 =
 GET parameters.
