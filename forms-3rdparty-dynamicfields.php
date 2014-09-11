@@ -5,13 +5,14 @@ Plugin Name: Forms-3rdparty Dynamic Fields
 Plugin URI: https://github.com/zaus/forms-3rdparty-integration
 Description: Provides some dynamic field values via placeholder to Forms 3rdparty Integration
 Author: zaus, skane
-Version: 0.3.2
+Version: 0.3.3
 Author URI: http://drzaus.com
 Changelog:
 	0.1 init
 	0.2 attach to message
 	0.3 GET params
 	0.3.2 referer
+	0.3.3 bugfixes
 */
 
 
@@ -142,11 +143,11 @@ class Forms3rdpartyDynamicFields {
 			case self::NETWORKSITEURL:
 				return network_site_url();
 			case self::REFERER:
-				return $_SERVER['HTTP_REFERER'];
+				return isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : null;
 			case self::ADMINEMAIL:
 				return get_bloginfo('admin_email'); // TODO: is there a way to protect against this?
 			case self::PAGEURL:
-				return get_site_url() . get_permalink();
+				return get_permalink();
 			case self::REQUESTURL:
 				return sprintf('http%s://', is_ssl() ? 's' : '') . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 			default:
