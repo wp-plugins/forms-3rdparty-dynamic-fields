@@ -5,7 +5,7 @@ Plugin Name: Forms-3rdparty Dynamic Fields
 Plugin URI: https://github.com/zaus/forms-3rdparty-integration
 Description: Provides some dynamic field values via placeholder to Forms 3rdparty Integration
 Author: zaus, spkane
-Version: 0.3.4
+Version: 0.4.2
 Author URI: http://drzaus.com
 Changelog:
 	0.1 init
@@ -13,6 +13,7 @@ Changelog:
 	0.3 GET params
 	0.3.2 referer
 	0.3.3 bugfixes
+	0.4 cookies (#2), wpreferer (#3), options in readme (#1)
 */
 
 
@@ -54,8 +55,11 @@ class Forms3rdpartyDynamicFields {
 	const PAGEURL = '##PAGEURL##';
 	const REQUESTURL = "##REQUESTURL##";
 	const REFERER = "##REFERER##";
+	const WPREFERER = "##WPREFERER##";
 	const GETPARAM_PREFIX = "##GET:{";
-	const PREFIX_LEN = 7; // the length of GETPARAM_PREFIX
+	const COOKIEPARAM_PREFIX = "##COOKIE:{";
+	const GET_PREFIX_LEN = 7; // the length of GETPARAM_PREFIX
+	const COOKIE_PREFIX_LEN = 10; // the length of COOKIEPARAM_PREFIX
 
 	/**
 	 * placeholder for response attachments
@@ -111,6 +115,7 @@ class Forms3rdpartyDynamicFields {
 			case self::NETWORKSITEURL:
 			case self::ADMINEMAIL:
 			case self::REFERER:
+			case self::WPREFERER:
 			case self::PAGEURL:
 			case self::REQUESTURL:
 				return true;
@@ -121,6 +126,7 @@ class Forms3rdpartyDynamicFields {
 				}
 
 				elseif(0 === strpos($value, self::GETPARAM_PREFIX)) return true;
+				elseif(0 === strpos($value, self::COOKIEPARAM_PREFIX)) return true;
 
 				break;
 		} // switch $value
@@ -148,6 +154,8 @@ class Forms3rdpartyDynamicFields {
 				return get_bloginfo('name');
 			case self::NETWORKSITEURL:
 				return network_site_url();
+			case self::WPREFERER:
+				return wp_get_referer();
 			case self::REFERER:
 				return isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : null;
 			case self::ADMINEMAIL:
@@ -165,8 +173,13 @@ class Forms3rdpartyDynamicFields {
 				}
 				elseif(0 === strpos($value, self::GETPARAM_PREFIX)) {
 					// strip the rest of the param mask for the get key
-					$value = substr($value, self::PREFIX_LEN, -3);
+					$value = substr($value, self::GET_PREFIX_LEN, -3);
 					return isset($_GET[ $value ]) ? $_GET[ $value ] : null;
+				}
+				elseif(0 === strpos($value, self::COOKIEPARAM_PREFIX)) {
+					// strip the rest of the param mask for the get key
+					$value = substr($value, self::COOKIE_PREFIX_LEN, -3);
+					return isset($_COOKIE[ $value ]) ? $_COOKIE[ $value ] : null;
 				}
 
 				break;
@@ -297,13 +310,25 @@ class Forms3rdpartyDynamicFields {
 							<?php $t = self::REFERER; ?>
 							<td class="dyn-field"><code><?php echo $t ?></code></td>
 							<td><?php echo $this->replace($t); ?></td>
-							<td><?php _e('Referer for the current page', $P) ?></td>
+							<td><?php _e('Referer for the current page, according to PHP', $P) ?></td>
+						</tr>
+						<tr>
+							<?php $t = self::WPREFERER; ?>
+							<td class="dyn-field"><code><?php echo $t ?></code></td>
+							<td><?php echo $this->replace($t); ?></td>
+							<td><?php _e('Referer for the current page, according to Wordpress', $P) ?></td>
 						</tr>
 						<tr>
 							<?php $t = self::GETPARAM_PREFIX; ?>
 							<td class="dyn-field"><code><?php echo $t ?>page}##</code></td>
 							<td><?php echo $this->replace($t . 'page}##'); ?></td>
 							<td><?php _e('The indicated GET parameter (i.e. <code>?page=...</code>, indicated here with <code>{page}</code>)', $P) ?></td>
+						</tr>
+						<tr>
+							<?php $t = self::COOKIEPARAM_PREFIX; $v = 'wordpress_test_cookie'; ?>
+							<td class="dyn-field"><code><?php echo $t, $v ?>}##</code></td>
+							<td><?php echo $this->replace($t . $v . '}##'); ?></td>
+							<td><?php _e('The indicated COOKIE parameter', $P) ?></td>
 						</tr>
 					</tbody>
 				</table>
